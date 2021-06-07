@@ -1,11 +1,13 @@
 import React, { useRef, useEffect, useState } from 'react';
-import mapboxgl from 'mapbox-gl';
+import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
 import './Map.css';
 
-mapboxgl.accessToken =
-    'pk.eyJ1IjoidXNlcnBhdiIsImEiOiJja3AyanpkZGYwNmNjMnVta25scmhob3MxIn0.DUIm9sqf6hql4AYqIeSqBg';
-// mine is pk.eyJ1IjoidXNlcnBhdiIsImEiOiJja3AyanpkZGYwNmNjMnVta25scmhob3MxIn0.DUIm9sqf6hql4AYqIeSqBg
 
+
+mapboxgl.accessToken =
+    'pk.eyJ1IjoidXNlcnBhdiIsImEiOiJja24zZmhxODAwOGpoMnZvMGpnZmtrNnhiIn0.62IOjLEwae3VzgbXme8MNg';
+// mine is pk.eyJ1IjoidXNlcnBhdiIsImEiOiJja3AyanpkZGYwNmNjMnVta25scmhob3MxIn0.DUIm9sqf6hql4AYqIeSqBg
+// mine default
 // default is pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA
 
 const Map = () => {
@@ -22,7 +24,8 @@ const Map = () => {
             style: 'mapbox://styles/mapbox/dark-v10',
             center: [lng, lat],
             zoom: zoom,
-            pitch: 45
+            pitch: 45,
+            accessToken: 'pk.eyJ1IjoidXNlcnBhdiIsImEiOiJja24zZmhxODAwOGpoMnZvMGpnZmtrNnhiIn0.62IOjLEwae3VzgbXme8MNg'
         });
 
 
@@ -31,6 +34,8 @@ const Map = () => {
             setLat(map.getCenter().lat.toFixed(4));
             setZoom(map.getZoom().toFixed(2));
         });
+
+
 
         // Clean up on unmount
         return () => map.remove();

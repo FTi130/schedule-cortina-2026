@@ -16,24 +16,32 @@ export default function ClockExample() {
         const handle = setInterval(() => setTime(getSeconds()), 100);
         return () => clearInterval(handle);
     }, []);
-    // console.log(time);
+    //console.log(time);
+    let
+        counter = 0;
     const seconds = time % 60;
+    //console.log(seconds);
+    const check  = seconds % 2;
+    console.log(check);
     const minutes = (time / 60) % 60;
-    // const hours = (time / (60 * 24)) % 24;
+    const hours = (time / (60 * 24)) % 24;
 
 
     return (
         <XYPlot
             xDomain={[-3, 3]}
             yDomain={[-3, 3]}
-            width={1450}
+            width={700}
             getAngle={d => d.time}
-            getAngle0={() => 0}
+            getAngle0={() => 3.1415926535}
             height={300}
         >
             <ArcSeries
                 onSeriesMouseOver={(event)=>{
                     document.body.style.cursor = "pointer";
+                }}
+                onSeriesMouseOut={(event)=>{
+                    document.body.style.cursor = "default";
                 }}
                 onSeriesClick={(event)=>{
                     // does something on click
@@ -50,15 +58,17 @@ export default function ClockExample() {
 
                     {time: (seconds / 60) * 2 * PI, radius0: 1, radius: 1.5, color: 0},
 
-                    {
+                    /*{
                         time: (minutes / 60) * 2 * PI,
                         radius0: 1.6,
                         radius: 2.1,
                         color: 1
                     }
-                    //,
 
-                    //{time: (hours / 24) * 2 * PI, radius0: 2.2, radius: 2.7, color: 2}
+                     */
+
+
+                    {time: (hours / 24) * 2 * PI, radius0: 2.2, radius: 2.7, color: 2}
                 ]}
                 // colorRange={EXTENDED_DISCRETE_COLOR_RANGE}
             />

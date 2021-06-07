@@ -1,12 +1,13 @@
-import React, {useState, useEffect} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import {render} from 'react-dom';
 
-// import {StaticMap} from 'react-map-gl';
+import {StaticMap} from '!react-map-gl'; // eslint-disable-line import/no-webpack-loader-syntax
 import Map from './Map';
+
+// import MapGL from './MapGL';
 
 import {AmbientLight, PointLight, LightingEffect} from '@deck.gl/core';
 import DeckGL from '@deck.gl/react';
-import {PolygonLayer} from '@deck.gl/layers';
 import {TripsLayer} from '@deck.gl/geo-layers';
 
 import ClockExample from './clock';
@@ -18,10 +19,60 @@ import Donut from './Donut';
 import FleetSplit from './FleetSplit';
 import BaseBarDep from './BaseBarDep';
 import BaseBarArr from './BaseBarArr';
+import LinkHintSankeyExample from './Sankey-Link';
+
 import './App.css';
+import eCitaro from './eCitaro.jpg'; // with import
+import cortinalogotext from './cortinalogotext.png';
+
+
+import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
+import './Map.css';
+import buscor from './buscor.png';
 
 // const TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
-// const TOKEN = 'pk.eyJ1IjoidXNlcnBhdiIsImEiOiJja3AyanpkZGYwNmNjMnVta25scmhob3MxIn0.DUIm9sqf6hql4AYqIeSqBg'; // pk.eyJ1IjoidXNlcnBhdiIsImEiOiJja3AyanpkZGYwNmNjMnVta25scmhob3MxIn0.DUIm9sqf6hql4AYqIeSqBg
+const TOKEN = 'pk.eyJ1IjoidXNlcnBhdiIsImEiOiJja24zZmhxODAwOGpoMnZvMGpnZmtrNnhiIn0.62IOjLEwae3VzgbXme8MNg'; // pk.eyJ1IjoidXNlcnBhdiIsImEiOiJja3AyanpkZGYwNmNjMnVta25scmhob3MxIn0.DUIm9sqf6hql4AYqIeSqBg
+
+
+
+
+// start tying Map.js here
+mapboxgl.accessToken =
+    'pk.eyJ1IjoidXNlcnBhdiIsImEiOiJja24zZmhxODAwOGpoMnZvMGpnZmtrNnhiIn0.62IOjLEwae3VzgbXme8MNg';
+// mine is pk.eyJ1IjoidXNlcnBhdiIsImEiOiJja3AyanpkZGYwNmNjMnVta25scmhob3MxIn0.DUIm9sqf6hql4AYqIeSqBg
+// mine default
+// default is pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA
+
+const Mapbox = () => {
+    const mapContainerRef = useRef(null);
+
+    const [lng, setLng] = useState(12.425);
+    const [lat, setLat] = useState(46.515);
+    const [zoom, setZoom] = useState(10.5);
+
+    // Initialize map when component mounts
+    useEffect(() => {
+        const map = new mapboxgl.Map({
+            container: mapContainerRef.current,
+            style: 'mapbox://styles/mapbox/dark-v10',
+            center: [lng, lat],
+            zoom: zoom,
+            pitch: 45,
+            accessToken: 'pk.eyJ1IjoidXNlcnBhdiIsImEiOiJja24zZmhxODAwOGpoMnZvMGpnZmtrNnhiIn0.62IOjLEwae3VzgbXme8MNg'
+        });
+
+
+        // Clean up on unmount
+        return () => map.remove();
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+    return (
+        <div>
+            <div className='map-container' ref={mapContainerRef} />
+        </div>
+    );
+};
+// end here
 
 
 const triplist =[];
@@ -264,7 +315,7 @@ const buttonstyle ={
     borderRadius: '10px',
     zIndex: 10000,
     position: 'absolute',
-    padding: '.5rem 1rem',
+    padding: '.3rem 1rem',
     margin: '2rem',
     cursor: 'pointer'
 };
@@ -278,21 +329,18 @@ const txtst = {
     right: 0,
     height: '100%',
     top: 0,
-    width: '30%',
+    width: '41%',
     paddingLeft: '1rem',
     paddingRight: '1rem',
     paddingTop: '1rem',
-    fontSize: 13,
     opacity: '100%', // 50%
     overflowY: 'scroll'
 };
 
 const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
 
-const landCover = [[[-74.0, 40.7], [-74.02, 40.7], [-74.02, 40.72], [-74.0, 40.72]]];
 
 export default function App({
-                                buildings = DATA_URL.BUILDINGS,
                                 trips = triplist, // DATA_URL.TRIPS,
                                 initialViewState = INITIAL_VIEW_STATE,
                                 trailLength = 15,
@@ -323,13 +371,7 @@ export default function App({
 
     const layers = [
         // This is only needed when using shadow effects
-        new PolygonLayer({
-            id: 'ground',
-            data: landCover,
-            getPolygon: f => f,
-            stroked: false,
-            getFillColor: [0, 0, 0, 0]
-        }),
+
         new TripsLayer({
             id: 'trips',
             data: trips,
@@ -342,44 +384,26 @@ export default function App({
             currentTime: time,
             trailLength: 3,
             shadowEnabled: false
-        }),
-        new PolygonLayer({
-            id: 'buildings',
-            data: buildings,
-            extruded: true,
-            wireframe: false,
-            opacity: 0.5,
-            getPolygon: f => f.polygon,
-            getElevation: f => f.height,
-            getFillColor: theme.buildingColor,
-            material: theme.material
         })
     ];
 // Map usage before:  <StaticMap mapboxApiAccessToken={TOKEN} reuseMaps mapStyle={mapStyle} preventStyleDiffing={false} />
+// <StaticMap mapboxApiAccessToken={TOKEN} mapStyle={'mapbox://styles/mapbox/light-v8'} />
     return (
         <div>
-            <div style={{position:'static', height: '100%'}}>
+            <div style={{position:'static'}}>
 
                 <DeckGL
-
                     layers={layers}
                     effects={theme.effects}
                     initialViewState={initialViewState}
                     controller={false}
                 >
-                    <a href="https://milano-cortina-2026.netlify.app/">
-                        <button style={buttonstyle}>Back</button>
-                    </a>
-
-                    <Map />
-
-                    <ClockExample />
-
                 </DeckGL>
+                <Map />
             </div>
 
             <div style={txtst}>
-                <h1>
+                <h1 style={{fontSize: '24px', fontWeight: 600}}>
                     Hydrogen Buses & Schedule
                 </h1>
                 <p style={{fontSize: '5', fontStyle: 'italic' }}>(Scroll down to read)</p>
@@ -393,13 +417,24 @@ export default function App({
                     on the route.
                     Total elevation difference between two points is about 500 meters with a length of a route of
                     34 kilometers.</p>
-                <Plot />
+                <br />
+
+                <div className={'marginAutoChild'}>
+                    <Plot />
+                </div>
+
+                <br />
 
                 <p>
                     The road can be considered as one with an average difficulty for driving long vehicle.
                     Therefore, we suggest to use the second generation of Citaro FuelCell Hybrid bus provided by
-                    Daimler. <a href="https://www.mercedes-benz-bus.com/en_DE/models/ecitaro/facts/technical-data.html" target="_blank">Citaro series</a> is a standard type of a bus operated in a hige amount of transport systems across the world . It has following characteristics for a model equiped
-                    with hydrogen fuel cell system.</p> Some technical characteristics of the bus are below:
+                    Daimler. <a href="https://www.mercedes-benz-bus.com/en_DE/models/ecitaro/facts/technical-data.html" target="_blank">Citaro series</a> is a standard type of a bus operated in a hige amount of transport systems across the world . It has following characteristics for a model equipped
+                    with hydrogen fuel cell system.
+                </p>
+                <p>
+                    Some technical characteristics of the bus are below:
+                </p>
+
                 <ul>
                     <li>18 metres long</li>
                     <li>146 passengers</li>
@@ -407,38 +442,149 @@ export default function App({
                     <li>250-300 km without refueling</li>
                     <li>8 kg of hydrogen per 100 km</li>
                 </ul>
-                <p>The radius of turn for this bus was considered in the study. We expect this bus to be able to turn in every curve on the route.
-                    However, it is not possible for two buses to turn on the one curve at the same time. This fact can affect the total travel time.</p>
-                <br />
-                <img style={{width: 450}} src={"eCitaro-G.jpg"} alt="eCitaro G" />
+
+                <p>
+                    The radius of turn for this bus was considered in the study. We expect this bus to be able to turn
+                    in every curve on the route.
+                    However, it is not possible for two buses to turn on the one curve at the same time.
+                    This fact can affect the total travel time.
+                </p>
+
                 <br />
 
-                <p>According to our calculations, 87 buses will be needed to satisfy the demand also considering peak days and hours. This number also includes
+                <div className={'marginAutoChild'}>
+                    <img style={{width: 750}} src={buscor} alt="eCitaroG" />
+                </div>
+
+                <br />
+
+                <p>According to our calculations, 51 buses will be needed to satisfy the demand also considering peak days and hours. This number also includes
                     buses on the line Cortina - Dobbiaco. However, more than half of the fleet is expected to operate on the line Calalzo-Cortina.
                     According to our forecast, 56% of visitors will approach Cortina d'Ampezzo from the South via Calalzo di Cadore</p>
 
-
-                <h1 style={{textAlign: 'center', fontStyle: 'italic' }}>
-                    87 buses in total
+                <br />
+                <h1 style={{fontSize: 25,textAlign: 'center', fontStyle: 'italic' }}>
+                    51 buses in total
                 </h1>
+                <br />
                 <div className={'marginAutoChild'}>
                     <FleetSplit />
                 </div>
 
 
+                <br />
+                <h1 style={{fontSize: 25,textAlign: 'center', fontStyle: 'italic' }}>
+                    The Visitors
+                </h1>
 
+                <br />
+
+                <p>Cortina d'Ampezzo and the whole region of Alpi Dolomiti is a well know resort and ski area.
+                    Every year it is visited by a huge number of people all around the world. We tried to understand
+                    where people are coming from during the Winter season.</p>
+                <br />
+                <p>We tried to avoid current pandemic situation and focused on the case during normal demand time.
+                    This way we expect it to be in 2026, the year of Olympic Games.
+                    We split visitors several groups taking those who come from Italy itself,
+                    neighboring countries such like Austria or Germany and guests from far away including non-EU
+                    countries and other continents. Working on the estimations of visitors during Olympic Games,
+                    we found out that the split stays mostly the same.</p>
+                <div className={'marginAutoChild'}>
+                    <Donut />
+                </div>
+                <br />
+                <p>
+                    In a non-pandemic situation, there is a big number of visitors coming from non-neighboring countries.
+                    It means that this people are forced to use several options to travel to Cortina. This options
+                    at the moment include rental cars and public transport services. Assuming that these visitors are
+                    arriving to Italy by plane, we tried to consider all possible routes.
+                    <a href="https://map-cortina-2026.netlify.app/" rel="noopener noreferrer" target="_blank">Here</a> you can read more about
+                    main transportation hubs which connect the region of the Games with other countries.
+                </p>
+                <br />
+
+                <p>Below is a rough representation of a path between Malpensa - the airport of Milan and the main air hub of Northern Italy - and Cortina d'Ampezzo.
+                There are couple of ways to reach the destination. However, travel time at the moment is expected to be
+                    5 hours minimum. Using public transport you will probably decide to go by path Milan-Venice-Belluno-Calalzo-Cortina.
+                    Anyway, there are several possible paths and they vary in terms of time and cost.</p>
+                <br/>
+                <div className={'marginAutoChild'}>
+                    <LinkHintSankeyExample />
+                </div>
+                <br />
+                    <p>If you are using a car to get to Cortina, you can check the route using <a href="https://map-cortina-2026.netlify.app/map-direction" rel="noopener noreferrer" target="_blank">our service</a>.
+                </p>
+                <br />
+
+                <h1 style={{fontSize: 25,textAlign: 'center', fontStyle: 'italic' }}>
+                    Demand During the Games
+                </h1>
+                <br />
+
+                 <p>
+                There are several competitions that are expected to take place in Cortina d'Ampezzo during Olympic Games.
+                     You can check in details <a href="https://www.milanocortina2026.org/en/winter-olimpic-games-map-milano-cortina-2026/cortina-d-ampezzo/" rel="noopener noreferrer" target="_blank">here</a>.
+                    </p>
+
+                <p>Part of our job was trying to estimate the number of visitors for each day of the Games.
+                    Our predictions are based on the official schedule for competitions. We expect most of the visitors to come at least one day before
+                the competition he want to attend. Therefore, the we split the movement of people to their arrivals and
+                    depatures from Cortina d'Ampezzo. You can see how it looks like plotted below.</p>
+
+
+                <div className={'marginAutoChild'}>
+                <BaseBarArr />
+                </div>
+
+                <div className={'marginAutoChild'}>
+                <BaseBarDep />
+                </div>
+
+                <br />
+                <br />
+
+                <p>The part of arrivals looks very similar to the expected number of spectators for each event but
+                    shifted due to our estimations of people staying at least a day in the town </p>
+                <p>Departure is also affected by our estimation of people willing to stay longer, technical staff
+                    and VIP guests.</p>
+
+                <p>We expect that the high demand period in Cortina will come to an end several days after the Closing
+                    Cermony of the Games</p>
+
+
+                <br />
+
+                <div className={'marginAutoChild'}>
+                    <LabelSer />
+                </div>
+
+                <br />
+
+
+
+                <p>Our work completed in this study can be extended and improved. We still gather some data about upcoming events. Therefore, </p>
+                <p>Feel free to reach us and read more about our project <a href="https://milano-cortina-2026.netlify.app/" rel="noopener noreferrer" target="_blank">here</a>.</p>
+
+                <br />
                 <div className={'marginAutoChild'}>
                     <RadialChartS />
                 </div>
+                <br />
+                <p style={{fontSize: '5', fontStyle: 'italic', textAlign: 'right' }}>(Warm regards)</p>
+                <p style={{fontSize: '5', fontStyle: 'italic', textAlign: 'right' }}>(Viele Grusse)</p>
+                <p style={{fontSize: '5', fontStyle: 'italic', textAlign: 'right' }}>(Cordiali Saluti)</p>
 
-                <LabelSer />
+                <br />
+
 
                 <br />
-                <BaseBarArr />
-                <BaseBarDep />
+                <a href="https://www.milanocortina2026.org/en/" title="Official Website">
+                <div className={'marginAutoChild'}>
+                        <img src={cortinalogotext} width={'25%'} style={{margin: 'auto', display: 'flex'}} />
+                </div>
+                </a>
                 <br />
-                <Donut />
-                <br />
+
             </div>
 
         </div>
