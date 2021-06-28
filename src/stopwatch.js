@@ -19,7 +19,7 @@ function Stopwatch() {
     const start = () => { // const
         run();
         setStatus(1);
-        setInterv(setInterval(run, 600));
+        setInterv(setInterval(run, 300));
     };
 
     var updatedMs = time.ms, updatedS = time.s, updatedM = time.m, updatedH = time.h;
