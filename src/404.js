@@ -6,7 +6,7 @@ ReactDOM.render(
     <React.StrictMode>
         <div>
             <p>
-                Lol what
+                Why are you here?
             </p>
         </div>
     </React.StrictMode>,

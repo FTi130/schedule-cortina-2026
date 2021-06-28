@@ -4,6 +4,7 @@ import {render} from 'react-dom';
 import {StaticMap} from '!react-map-gl'; // eslint-disable-line import/no-webpack-loader-syntax
 import Map from './Map';
 
+
 // import MapGL from './MapGL';
 
 import {AmbientLight, PointLight, LightingEffect} from '@deck.gl/core';
@@ -21,8 +22,10 @@ import BaseBarDep from './BaseBarDep';
 import BaseBarArr from './BaseBarArr';
 import LinkHintSankeyExample from './Sankey-Link';
 
+import VerticalBar from './VerticalBar';
+
+
 import './App.css';
-import eCitaro from './eCitaro.jpg'; // with import
 import cortinalogotext from './cortinalogotext.png';
 
 
@@ -30,7 +33,8 @@ import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-load
 import './Map.css';
 import buscor from './buscor.png';
 
-// const TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
+import Stopwatch from './stopwatch';
+
 const TOKEN = 'pk.eyJ1IjoidXNlcnBhdiIsImEiOiJja24zZmhxODAwOGpoMnZvMGpnZmtrNnhiIn0.62IOjLEwae3VzgbXme8MNg'; // pk.eyJ1IjoidXNlcnBhdiIsImEiOiJja3AyanpkZGYwNmNjMnVta25scmhob3MxIn0.DUIm9sqf6hql4AYqIeSqBg
 
 
@@ -312,7 +316,7 @@ const INITIAL_VIEW_STATE = {
 const buttonstyle ={
     color: 'white',
     backgroundColor: 'orange',
-    borderRadius: '10px',
+    borderRadius: '7px',
     zIndex: 10000,
     position: 'absolute',
     padding: '.3rem 1rem',
@@ -338,6 +342,8 @@ const txtst = {
 };
 
 const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
+
+
 
 
 export default function App({
@@ -399,7 +405,14 @@ export default function App({
                     controller={false}
                 >
                 </DeckGL>
+
                 <Map />
+                <a href="https://milano-cortina-2026.netlify.app/" rel="noopener noreferrer">
+                <button style={buttonstyle}>Home</button>
+                </a>
+
+                <Stopwatch />
+
             </div>
 
             <div style={txtst}>
@@ -409,9 +422,9 @@ export default function App({
                 <p style={{fontSize: '5', fontStyle: 'italic' }}>(Scroll down to read)</p>
                 <br />
                 <p>On the left you see simulation of one day schedule during the Olympic Games.</p>
-                <p>The first bus departs at 6 AM both from Calalzo di Cadore and Cortina d'Ampezzo</p>
+                <p>The first bus departs at 5 AM both from Calalzo di Cadore and Cortina d'Ampezzo</p>
                 <p>The last bus departs from each station at 22 PM.</p>
-                <p>Estimated time of travel for each bus is one hour</p>
+                <p>Estimated time of travel for each bus is one hour.</p>
 
                 <p>The time needed for the bus driving from Calalzo to Cortina can be increased because of the elevation
                     on the route.
@@ -428,13 +441,14 @@ export default function App({
                 <p>
                     The road can be considered as one with an average difficulty for driving long vehicle.
                     Therefore, we suggest to use the second generation of Citaro FuelCell Hybrid bus provided by
-                    Daimler. <a href="https://www.mercedes-benz-bus.com/en_DE/models/ecitaro/facts/technical-data.html" target="_blank">Citaro series</a> is a standard type of a bus operated in a hige amount of transport systems across the world . It has following characteristics for a model equipped
+                    Daimler. <a href="https://www.mercedes-benz-bus.com/en_DE/models/ecitaro/facts/technical-data.html"
+                                target="_blank">Citaro series</a> is a standard type of a bus operated in a big amount
+                    of transport systems across the world. It has following characteristics for a model equipped
                     with hydrogen fuel cell system.
                 </p>
                 <p>
                     Some technical characteristics of the bus are below:
                 </p>
-
                 <ul>
                     <li>18 metres long</li>
                     <li>146 passengers</li>
@@ -442,35 +456,28 @@ export default function App({
                     <li>250-300 km without refueling</li>
                     <li>8 kg of hydrogen per 100 km</li>
                 </ul>
-
                 <p>
-                    The radius of turn for this bus was considered in the study. We expect this bus to be able to turn
+                    The radius of the turn for this bus has been analysed in the study. We expect this bus to be able to turn
                     in every curve on the route.
                     However, it is not possible for two buses to turn on the one curve at the same time.
                     This fact can affect the total travel time.
                 </p>
-
                 <br />
-
                 <div className={'marginAutoChild'}>
                     <img style={{width: 750}} src={buscor} alt="eCitaroG" />
                 </div>
-
                 <br />
-
-                <p>According to our calculations, 51 buses will be needed to satisfy the demand also considering peak days and hours. This number also includes
+                <p>According to our calculations, 54 buses will be needed to satisfy the demand also considering peak days and hours. This number also includes
                     buses on the line Cortina - Dobbiaco. However, more than half of the fleet is expected to operate on the line Calalzo-Cortina.
                     According to our forecast, 56% of visitors will approach Cortina d'Ampezzo from the South via Calalzo di Cadore</p>
-
                 <br />
                 <h1 style={{fontSize: 25,textAlign: 'center', fontStyle: 'italic' }}>
-                    51 buses in total
+                    54 buses in total
                 </h1>
                 <br />
                 <div className={'marginAutoChild'}>
                     <FleetSplit />
                 </div>
-
 
                 <br />
                 <h1 style={{fontSize: 25,textAlign: 'center', fontStyle: 'italic' }}>
@@ -497,8 +504,7 @@ export default function App({
                     In a non-pandemic situation, there is a big number of visitors coming from non-neighboring countries.
                     It means that this people are forced to use several options to travel to Cortina. This options
                     at the moment include rental cars and public transport services. Assuming that these visitors are
-                    arriving to Italy by plane, we tried to consider all possible routes.
-                    <a href="https://map-cortina-2026.netlify.app/" rel="noopener noreferrer" target="_blank">Here</a> you can read more about
+                    arriving to Italy by plane, we tried to consider all possible routes. <a href="https://map-cortina-2026.netlify.app/" rel="noopener noreferrer" target="_blank">Here</a> you can read more about
                     main transportation hubs which connect the region of the Games with other countries.
                 </p>
                 <br />
@@ -549,7 +555,8 @@ export default function App({
                     and VIP guests.</p>
 
                 <p>We expect that the high demand period in Cortina will come to an end several days after the Closing
-                    Cermony of the Games</p>
+                    Ceremony of the Games. After that, the people will move to the closest transportation hubs to leave
+                    the Olympic Region.</p>
 
 
                 <br />
@@ -560,19 +567,37 @@ export default function App({
 
                 <br />
 
+                <h1 style={{fontSize: 25,textAlign: 'center', fontStyle: 'italic' }}>
+                    Financial Evaluation
+                </h1>
+                <br />
+                <p>A sensitivity analysis has been performed to assess how the service requirements would change,
+                    changing some boundary conditions of the project. There are several cost allocation scenarios considered.
+                    The four scenarios aim to assess the performance of the transportation service to the fluctuations
+                    of two main drivers: the spectator distributions and the parking spots available. The last scenario
+                    accounts for the latest information available as of the time of writing this report. All
+                    scenarios satisfy the transportation demand.</p>
+                <br />
+
+                <div className={'marginAutoChild'}>
+                    <VerticalBar />
+                </div>
+                <br />
 
 
-                <p>Our work completed in this study can be extended and improved. We still gather some data about upcoming events. Therefore, </p>
+                <p>Our work completed in this study can be extended and improved. We still gather some data about upcoming events.</p>
                 <p>Feel free to reach us and read more about our project <a href="https://milano-cortina-2026.netlify.app/" rel="noopener noreferrer" target="_blank">here</a>.</p>
 
                 <br />
-                <div className={'marginAutoChild'}>
-                    <RadialChartS />
-                </div>
+                {/*<div className={'marginAutoChild'} style={{margin: 'auto', display: 'flex'}}>*/}
+                {/*    <RadialChartS />*/}
+                {/*</div>*/}
                 <br />
-                <p style={{fontSize: '5', fontStyle: 'italic', textAlign: 'right' }}>(Warm regards)</p>
-                <p style={{fontSize: '5', fontStyle: 'italic', textAlign: 'right' }}>(Viele Grusse)</p>
-                <p style={{fontSize: '5', fontStyle: 'italic', textAlign: 'right' }}>(Cordiali Saluti)</p>
+                <p style={{fontSize: '5', fontStyle: 'italic', textAlign: 'right' }}>Warm regards</p>
+                <p style={{fontSize: '5', fontStyle: 'italic', textAlign: 'right' }}>Cordiali Saluti</p>
+                <p style={{fontSize: '5', fontStyle: 'italic', textAlign: 'right' }}>Herzliche Grüße</p>
+                <br />
+                <p style={{fontSize: '5', fontStyle: 'bold', fontWeight: 'bold', textAlign: 'right' }}>The Team</p>
 
                 <br />
 

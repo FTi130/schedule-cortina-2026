@@ -1,6 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
 import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
 import './Map.css';
+import {Marker} from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
+import cortinalogotext from './cortinalogotext.png';
 
 
 
@@ -34,6 +36,33 @@ const Map = () => {
             setLat(map.getCenter().lat.toFixed(4));
             setZoom(map.getZoom().toFixed(2));
         });
+
+        var Calalzo = new mapboxgl.Popup({ closeOnClick: false, closeButton: false })
+            .setLngLat([12.379,46.4559])
+            .setHTML('<h1>The bus depot</h1>')
+            .addTo(map);
+
+//         /*
+//         var Cortina = new mapboxgl.Popup({ closeOnClick: true, closeButton:false})
+//             .setLngLat([12.13567, 46.545])
+//             .setHTML('<button style="width: 20px"> <p>Lol</p> </button>')
+//             .addTo(map);
+//
+//         */
+//
+//         var popup = new mapboxgl.Popup({ offset: 0 }).setText(
+//             'Cortina'
+//         );
+//
+// // create DOM element for the marker
+//         var el = document.createElement('div');
+//         el.id = 'marker';
+
+// // create the marker
+//         new mapboxgl.Marker(el)
+//             .setLngLat([12.12567, 46.575])
+//             .setPopup(popup) // sets a popup on this marker
+//             .addTo(map);
 
 
 
